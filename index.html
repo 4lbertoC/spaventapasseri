@@ -1,52 +1,178 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8"></meta>
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css"></link>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
 	<style>
-		img {
-			width: 50%;
-			left: 25%;
+		.previous_position_marker {
+			width: 15px;
+			height: 15px;
+			background: blue;
 			position: absolute;
+		}
+
+		.frame {
+			width: 50%;
+			position: relative;
 			margin: 10px;
+		}
+
+		img, .buttons_center {
+			width: 100%;
+			position: relative;
+			text-align: center;
+		}
+
+		.button_good {
+			background: green;
+			color: white;
+		}
+
+		.button_bad {
+			background: red;
+			color: white;
+		}
+
+		#frame_center {
+			left: 25%;
+		}
+
+		#slider {
+			margin: 0 10px;
 		}
 	</style>
 </head>
 <body>
-	<div id="slider"></div>
-	<img id="image"></img>
+	<div id="slider">
+	</div>
+	<div id="frame_center" class="frame">
+		<img id="image"></img>
+		<div class="buttons_center">
+			<div id="button_center_good" class="button_good">✔</div>
+			<div id="button_center_bad" class="button_bad">✘</div>
+		</div>
+	</div>
 	<script type="text/javascript">
-		(function() {
 
-			// The array of the images
-		    var images = %imageArray%;
-		    console.log('Added images, total count: ' + images.length);
+			// Constants
+			var MAX_MARKERS = 7;
 
-		    // Show an image in the center thumbnail
-			function showImage(imgUrl) {
-	    		document.getElementById('image').src = imgUrl;
-			}
-
-			// Create the slider
 			$(function() {
-			    $( "#slider" ).slider({
+
+				//
+				// Variables
+				//
+
+					// The array of the images
+			    var	images = %imageArray%,
+
+			    	// The last position of the slider
+			    	previousPosition = images.length - 1,
+
+			    	// The array of the previous position markers
+					previousPositionMarkers = [],
+
+					// The boundaries of the search
+					top = images.length - 1,
+					bottom = 0,
+
+					// The slider
+					jqSlider = $('#slider');
+			    
+
+			    console.log('Added images, total count: ' + images.length);
+
+			    //
+			    // Functions
+			    //
+
+			    function showImage(imgUrl) {
+		    		// Show an image in the center thumbnail
+
+					document.getElementById('image').src = imgUrl;
+				}
+
+				function createMarker(refJQNode, value, maxValue) {
+					// Create a marker on the slider
+
+					// Create the element
+					var marker = $('<div class="previous_position_marker"></div>')
+						.css({
+							left: '' + (value * 100 / maxValue) + '%',
+							opacity: 1
+						});
+
+					// Append it to the slider and array
+					refJQNode.append(marker);
+					previousPositionMarkers.push(marker);
+
+					// Reduce opacity of old markers, based on their age.
+					// Remove if too old
+					var opacityStep = 1 / MAX_MARKERS;
+					var oldMarkers = previousPositionMarkers.filter(function(marker) {
+						return +marker.css('opacity') < (opacityStep * 2);
+					});
+					$.each(oldMarkers, function(idx, marker) {
+						var pos = $.inArray(marker, previousPositionMarkers);
+						if(pos > -1)
+						{
+							previousPositionMarkers.splice(pos, 1);
+							marker.remove();
+						}
+					});
+					$.each(previousPositionMarkers, function(idx, marker) {
+						marker.css({
+							opacity: +marker.css('opacity') - opacityStep
+						})
+					});
+				}
+
+				function moveSlider(position) {
+					// Move the slider at the given position
+
+					jqSlider.slider('option', 'value', position);
+					jqSlider.slider('option', 'stop')(null, {value: position});
+				}
+
+				//
+				// Widget creation
+				//
+
+				// Create the slider
+			    jqSlider.slider({
 			    	min: 0,
-			    	max: images.length - 1,
-			    	value: images.length - 1,
+			    	max: previousPosition,
+			    	value: previousPosition,
 			    	stop: function(event, ui) {
 			    		var imgIndex = ui.value,
 			    			imgUrl = images[imgIndex];
 
 	    				console.log(imgIndex, imgUrl);
 			    		showImage(imgUrl);
+
+			    		createMarker(jqSlider, previousPosition, images.length - 1);
+			    		previousPosition = imgIndex;
 			    	}
 			    });
 			    $("#slider > a ").focus();
-		  	});
 
-		  	showImage(images[images.length - 1]);
-		})();
+			    $('.button_good').button()
+			    	.click(function() {
+			    		var nextPosition = Math.floor((top + previousPosition) / 2);
+			    		bottom = previousPosition;
+			    		moveSlider(nextPosition);
+			    	});
+			    $('.button_bad').button()
+			    	.click(function() {
+			    		var nextPosition = Math.floor((bottom + previousPosition) / 2);
+				    	top = previousPosition;
+				    	moveSlider(nextPosition);
+				    });
+
+		  		showImage(images[images.length - 1]);
+		  	});
 	</script>
 </body>
 </html>
