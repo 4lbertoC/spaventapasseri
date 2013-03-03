@@ -20,10 +20,10 @@ var app = connect()
 
     // Perform replacements
     indexFileContent = indexFileContent.replace(/%imageArray%/,JSON.stringify(fileNameArray));
-    console.log(indexFileContent)
 
     // Serve page
     res.end(indexFileContent);
+    
   })
  .listen(3000);
  console.log('Listening on port 3000');
