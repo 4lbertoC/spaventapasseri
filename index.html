@@ -163,12 +163,14 @@
 			    		var nextPosition = Math.floor((top + previousPosition) / 2);
 			    		bottom = previousPosition;
 			    		moveSlider(nextPosition);
+					$("#slider > a ").focus();
 			    	});
 			    $('.button_bad').button()
 			    	.click(function() {
 			    		var nextPosition = Math.floor((bottom + previousPosition) / 2);
 				    	top = previousPosition;
 				    	moveSlider(nextPosition);
+					$("#slider > a ").focus();
 				    });
 
 		  		showImage(images[images.length - 1]);
