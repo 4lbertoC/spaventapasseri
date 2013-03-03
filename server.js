@@ -11,6 +11,11 @@ var app = connect()
 
     // Read list of images from images folder into array and sort it
     var fileNameArray = fs.readdirSync('images');
+    // Filter only jpg files
+    fileNameArray = fileNameArray.filter(function(fileName) {
+      return fileName.indexOf('.jpg') > -1;  
+    });
+    // Sort the array by name
     fileNameArray.sort();
   
     // Perform replacements
@@ -20,3 +25,4 @@ var app = connect()
     res.end(indexFileContent);
   })
  .listen(3000);
+ console.log('Listening on port 3000');

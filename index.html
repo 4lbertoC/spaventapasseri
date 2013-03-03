@@ -4,23 +4,47 @@
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css"></link>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+	<style>
+		img {
+			width: 50%;
+			left: 25%;
+			position: absolute;
+			margin: 10px;
+		}
+	</style>
 </head>
 <body>
 	<div id="slider"></div>
 	<img id="image"></img>
 	<script type="text/javascript">
-		$(function() {
+		(function() {
+
+			// The array of the images
 		    var images = %imageArray%;
-		    $( "#slider" ).slider({
-		    	min: 0,
-		    	max: images.length,
-		    	value: images.length,
-		    	stop: function(event, ui) {
-		    		console.log(ui.value, images[ui.value]);
-		    		document.getElementById('image').src = images[ui.value];
-		    	}
-		    });
-	  	});
+
+		    // Show an image in the center thumbnail
+			function showImage(imgUrl) {
+	    		document.getElementById('image').src = imgUrl;
+			}
+
+			// Create the slider
+			$(function() {
+			    $( "#slider" ).slider({
+			    	min: 0,
+			    	max: images.length - 1,
+			    	value: images.length - 1,
+			    	stop: function(event, ui) {
+			    		var imgIndex = ui.value,
+			    			imgUrl = images[imgIndex];
+
+	    				console.log(imgIndex, imgUrl);
+			    		showImage(imgUrl);
+			    	}
+			    });
+		  	});
+
+		  	showImage(images[images.length - 1]);
+		})();
 	</script>
 </body>
 </html>
