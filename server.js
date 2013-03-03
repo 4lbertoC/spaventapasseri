@@ -13,7 +13,7 @@ var app = connect()
     var fileNameArray = fs.readdirSync('images');
     // Filter only jpg files
     fileNameArray = fileNameArray.filter(function(fileName) {
-      return fileName.indexOf('.jpg') > -1;  
+      return fileName.indexOf('.jpg') > -1 && fileName.indexOf('lastsnap') == -1;  
     });
     // Sort the array by name
     fileNameArray.sort();

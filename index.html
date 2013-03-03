@@ -134,6 +134,7 @@
 
 					jqSlider.slider('option', 'value', position);
 					jqSlider.slider('option', 'stop')(null, {value: position});
+					$("#slider > a ").focus();
 				}
 
 				//
@@ -156,6 +157,7 @@
 			    		previousPosition = imgIndex;
 			    	}
 			    });
+			    $("#slider > a ").focus();
 
 			    $('.button_good').button()
 			    	.click(function() {
