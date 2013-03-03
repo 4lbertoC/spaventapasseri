@@ -72,7 +72,14 @@
 			    	previousPosition = images.length - 1,
 
 			    	// The array of the previous position markers
-					previousPositionMarkers = [];
+					previousPositionMarkers = [],
+
+					// The boundaries of the search
+					top = images.length - 1,
+					bottom = 0,
+
+					// The slider
+					jqSlider = $('#slider');
 			    
 
 			    console.log('Added images, total count: ' + images.length);
@@ -122,12 +129,19 @@
 					});
 				}
 
+				function moveSlider(position) {
+					// Move the slider at the given position
+
+					jqSlider.slider('option', 'value', position);
+					jqSlider.slider('option', 'stop')(null, {value: position});
+				}
+
 				//
 				// Widget creation
 				//
 
 				// Create the slider
-			    $( '#slider' ).slider({
+			    jqSlider.slider({
 			    	min: 0,
 			    	max: previousPosition,
 			    	value: previousPosition,
@@ -138,13 +152,23 @@
 	    				console.log(imgIndex, imgUrl);
 			    		showImage(imgUrl);
 
-			    		createMarker($('#slider'), previousPosition, images.length - 1);
+			    		createMarker(jqSlider, previousPosition, images.length - 1);
 			    		previousPosition = imgIndex;
 			    	}
 			    });
 
-			    $('.button_good').button({});
-			    $('.button_bad').button({});
+			    $('.button_good').button()
+			    	.click(function() {
+			    		var nextPosition = Math.floor((top + previousPosition) / 2);
+			    		bottom = previousPosition;
+			    		moveSlider(nextPosition);
+			    	});
+			    $('.button_bad').button()
+			    	.click(function() {
+			    		var nextPosition = Math.floor((bottom + previousPosition) / 2);
+				    	top = previousPosition;
+				    	moveSlider(nextPosition);
+				    });
 
 		  		showImage(images[images.length - 1]);
 		  	});
