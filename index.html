@@ -7,16 +7,17 @@
 </head>
 <body>
 	<div id="slider"></div>
+	<img id="image"></img>
 	<script type="text/javascript">
 		$(function() {
 		    var images = %imageArray%;
-		    var imageDir = %imageDir%;
 		    $( "#slider" ).slider({
 		    	min: 0,
 		    	max: images.length,
 		    	value: images.length,
 		    	stop: function(event, ui) {
 		    		console.log(ui.value, images[ui.value]);
+		    		document.getElementById('image').src = images[ui.value];
 		    	}
 		    });
 	  	});

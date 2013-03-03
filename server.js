@@ -10,13 +10,11 @@ var app = connect()
   .use(function(req, res){
 
     // Read list of images from images folder into array and sort it
-    var imageDir = 'images';
-    var fileNameArray = fs.readdirSync(imageDir);
+    var fileNameArray = fs.readdirSync('images');
     fileNameArray.sort();
   
     // Perform replacements
     indexFileContent = indexFileContent.replace(/%imageArray%/,JSON.stringify(fileNameArray));
-    indexFileContent = indexFileContent.replace(/%imageDir%/,imageDir);
 
     // Serve page
     res.end(indexFileContent);
