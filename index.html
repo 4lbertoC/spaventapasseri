@@ -21,6 +21,7 @@
 
 			// The array of the images
 		    var images = %imageArray%;
+		    console.log('Added images, total count: ' + images.length);
 
 		    // Show an image in the center thumbnail
 			function showImage(imgUrl) {
@@ -41,7 +42,7 @@
 			    		showImage(imgUrl);
 			    	}
 			    });
-		  	});
+		  	}).focus();
 
 		  	showImage(images[images.length - 1]);
 		})();
